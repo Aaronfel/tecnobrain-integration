@@ -2,7 +2,7 @@ services:
   - type: web
     name: tecnobrain-integration
     env: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./Dockerfile.render
     dockerContext: .
     plan: free
     numInstances: 1
