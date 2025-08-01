@@ -55,10 +55,14 @@ RUN npm ci --only=production && npm cache clean --force
 # Copy built application from build stage
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=build /usr/src/app/node_modules/@prisma ./node_modules/@prisma
 
 # Copy Prisma files and scripts
 COPY prisma ./prisma
 COPY scripts ./scripts
+
+# Generate Prisma client for production
+RUN npx prisma generate
 
 # Make scripts executable
 RUN chmod +x scripts/deploy.sh
@@ -79,4 +83,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD curl -f http://localhost:3000/health || exit 1
 
 # Start the application
-CMD ["node", "dist/main"] 
+CMD ["node", "dist/main.js"] 
