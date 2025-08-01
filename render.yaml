@@ -4,7 +4,7 @@ services:
     env: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    plan: starter
+    plan: free
     numInstances: 1
     healthCheckPath: /health
     envVars:
@@ -18,4 +18,4 @@ services:
 databases:
   - name: tecnobrain-db
     databaseName: tecnobrain_db
-    plan: starter
+    plan: free
