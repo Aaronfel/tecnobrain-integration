@@ -21,9 +21,6 @@ RUN npm run build
 # List contents to verify build
 RUN ls -la ./dist/
 
-# Make scripts executable
-RUN chmod +x scripts/deploy.sh
-
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nestjs -u 1001
