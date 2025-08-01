@@ -18,5 +18,4 @@ services:
 databases:
   - name: tecnobrain-db
     databaseName: tecnobrain_db
-    user: postgres
     plan: starter
