@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Query, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Res, HttpStatus, Param } from '@nestjs/common';
 import { KommoService } from './kommo.service';
 // import { KommoWebhookDto } from './dto/kommo-message-received.dto';
 import { Response } from 'express';
@@ -8,9 +8,9 @@ import { Response } from 'express';
 export class KommoController {
   constructor(private readonly kommoService: KommoService) {}
 
-  @Post('/webhook')
+  @Post('/webhook/:scope_id')
   processWebhook(
-    @Query('scope_id') scopeId: string,
+    @Param('scope_id') scopeId: string,
     // @Body() createKommoDto: KommoWebhookDto,
     @Res() res: Response,
   ) {
