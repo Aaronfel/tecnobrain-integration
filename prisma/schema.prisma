@@ -10,28 +10,134 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-// Example User model - you can modify this as needed
-model User {
-    id        Int      @id @default(autoincrement())
-    email     String   @unique
-    name      String?
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    posts     Post[]
-
-    @@map("users")
+enum Role {
+    ADMIN
+    OPERATOR
 }
 
-// Example Post model - you can modify this as needed
-model Post {
-    id        Int      @id @default(autoincrement())
-    title     String
-    content   String?
-    published Boolean  @default(false)
-    authorId  Int
-    author    User     @relation(fields: [authorId], references: [id])
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+enum ClientStatus {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+}
 
-    @@map("posts")
+enum AssistantStatus {
+    ACTIVE
+    INACTIVE
+}
+
+enum ContentStatus {
+    REQUESTED
+    IN_PROGRESS
+    COMPLETED
+    FAILED
+}
+
+enum IntegrationStatus {
+    ACTIVE
+    INACTIVE
+    ERROR
+}
+
+model User {
+    id           Int      @id @default(autoincrement())
+    name         String
+    email        String   @unique
+    passwordHash String
+    role         Role
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    userClients UserClient[]
+}
+
+model Client {
+    id        Int          @id @default(autoincrement())
+    name      String
+    industry  String?
+    status    ClientStatus @default(ACTIVE)
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+
+    userClients  UserClient[]
+    assistants   Assistant[]
+    integrations Integration[]
+    content      Content[]
+}
+
+model UserClient {
+    id          Int      @id @default(autoincrement())
+    userId      Int
+    clientId    Int
+    permissions String
+    assignedAt  DateTime @default(now())
+
+    user   User   @relation(fields: [userId], references: [id])
+    client Client @relation(fields: [clientId], references: [id])
+}
+
+model Assistant {
+    id                Int             @id @default(autoincrement())
+    clientId          Int
+    name              String
+    openaiAssistantId String
+    model             String
+    temperature       Float
+    instructions      String
+    status            AssistantStatus @default(ACTIVE)
+    createdAt         DateTime        @default(now())
+    updatedAt         DateTime        @updatedAt
+
+    client  Client    @relation(fields: [clientId], references: [id])
+    content Content[]
+}
+
+model Integration {
+    id          Int               @id @default(autoincrement())
+    clientId    Int
+    type        String
+    credentials Json
+    webhookUrl  String?
+    status      IntegrationStatus @default(ACTIVE)
+    createdAt   DateTime          @default(now())
+    updatedAt   DateTime          @updatedAt
+
+    client Client             @relation(fields: [clientId], references: [id])
+    events IntegrationEvent[]
+}
+
+model IntegrationEvent {
+    id            Int      @id @default(autoincrement())
+    integrationId Int
+    payload       Json
+    eventType     String
+    receivedAt    DateTime @default(now())
+
+    integration Integration @relation(fields: [integrationId], references: [id])
+}
+
+model Content {
+    id          Int           @id @default(autoincrement())
+    clientId    Int
+    assistantId Int
+    type        String // ej: "text", "image", "audio", "video"
+    parameters  Json // prompt, settings, inputs, etc.
+    status      ContentStatus @default(REQUESTED)
+    requestedAt DateTime      @default(now())
+    startedAt   DateTime?
+    completedAt DateTime?
+
+    client    Client          @relation(fields: [clientId], references: [id])
+    assistant Assistant       @relation(fields: [assistantId], references: [id])
+    results   ContentResult[]
+}
+
+model ContentResult {
+    id        Int      @id @default(autoincrement())
+    contentId Int
+    fileUrl   String
+    format    String // ej: "mp3", "mp4", "png", "txt"
+    createdAt DateTime @default(now())
+
+    content Content @relation(fields: [contentId], references: [id])
 }

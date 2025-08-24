@@ -27,6 +27,7 @@ services:
     restart: always
     ports:
       - '3000:3000'
+      - '5555:5555'
     environment:
       DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/tecnobrain_db
       NODE_ENV: development

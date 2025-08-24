@@ -14,31 +14,31 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post('/create')
-  async createUser(@Body() userData: { email: string; name?: string }) {
-    return this.usersService.createUser(userData);
-  }
+  // @Post('/create')
+  // async createUser(@Body() userData: { email: string; name?: string }) {
+  //   return this.usersService.createUser(userData);
+  // }
 
-  @Get('/all')
-  async findAllUsers() {
-    return this.usersService.findAllUsers();
-  }
+  // @Get('/all')
+  // async findAllUsers() {
+  //   return this.usersService.findAllUsers();
+  // }
 
-  @Get('/:id')
-  async findUserById(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.findUserById(id);
-  }
+  // @Get('/:id')
+  // async findUserById(@Param('id', ParseIntPipe) id: number) {
+  //   return this.usersService.findUserById(id);
+  // }
 
-  @Put('/:id')
-  async updateUser(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() userData: { email?: string; name?: string },
-  ) {
-    return this.usersService.updateUser(id, userData);
-  }
+  // @Put('/:id')
+  // async updateUser(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() userData: { email?: string; name?: string },
+  // ) {
+  //   return this.usersService.updateUser(id, userData);
+  // }
 
-  @Delete('/:id')
-  async deleteUser(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.deleteUser(id);
-  }
+  // @Delete('/:id')
+  // async deleteUser(@Param('id', ParseIntPipe) id: number) {
+  //   return this.usersService.deleteUser(id);
+  // }
 }
